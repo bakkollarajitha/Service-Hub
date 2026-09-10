@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Service Marketplace with Ratings</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            width: 420px;
+            margin: auto;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        select, input, button {
+            width: 90%;
+            padding: 10px;
+            margin: 10px;
+        }
+        button {
+            background-color: green;
+            color: white;
+            border: none;
+        }
+        .worker-box {
+            text-align: left;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🏠 Service Marketplace</h2>
+
+    <input type="text" id="location" placeholder="Enter Location">
+
+    <select id="service" onchange="showWorkers()">
+        <option value="">Select Service</option>
+        <option value="Electrician">Electrician</option>
+        <option value="Plumber">Plumber</option>
+        <option value="Carpenter">Carpenter</option>
+    </select>
+
+    <div id="workers"></div>
+
+    <input type="number" id="hours" placeholder="Enter Hours">
+
+    <button onclick="calculate()">Calculate Cost</button>
+
+    <h3 id="result"></h3>
+
+    <button onclick="confirmBooking()">Confirm Booking</button>
+
+    <h3 id="confirmation"></h3>
+</div>
+
+<script>
+// Worker Data with Ratings
+const workerData = {
+    Electrician: [
+        {name: "Ramesh", rating: 4.8, cost: 300},
+        {name: "Suresh", rating: 4.5, cost: 280}
+    ],
+    Plumber: [
+        {name: "Mahesh", rating: 4.7, cost: 350},
+        {name: "Naresh", rating: 4.3, cost: 320}
+    ],
+    Carpenter: [
+        {name: "Rajesh", rating: 4.9, cost: 400},
+        {name: "Kiran", rating: 4.4, cost: 370}
+    ]
+};
+
+let selectedWorker = null;
+
+// Show workers based on service
+function showWorkers() {
+    let service = document.getElementById("service").value;
+    let workersDiv = document.getElementById("workers");
+    workersDiv.innerHTML = "";
+
+    if (service === "") return;
+
+    workerData[service].forEach((worker, index) => {
+        workersDiv.innerHTML += `
+            <div class="worker-box">
+                <input type="radio" name="worker" onclick="selectWorker('${service}', ${index})">
+                👷 ${worker.name} ⭐ ${worker.rating} (₹${worker.cost}/hr)
+            </div>
+        `;
+    });
+}
+
+// Select worker
+function selectWorker(service, index) {
+    selectedWorker = workerData[service][index];
+}
+
+// Calculate cost
+function calculate() {
+    let location = document.getElementById("location").value;
+    let hours = document.getElementById("hours").value;
+
+    if (!selectedWorker || location === "" || hours === "") {
+        alert("Please fill all details and select a worker");
+        return;
+    }
+
+    let total = selectedWorker.cost * hours;
+
+    document.getElementById("result").innerHTML =
+        "Location: " + location + "<br>" +
+        "Worker: " + selectedWorker.name + "<br>" +
+        "Rating: ⭐ " + selectedWorker.rating + "<br>" +
+        "Hours: " + hours + "<br>" +
+        "Total Cost: ₹" + total;
+}
+
+// Confirm booking
+function confirmBooking() {
+    if (!selectedWorker) {
+        alert("Please select a worker first");
+        return;
+    }
+
+    document.getElementById("confirmation").innerHTML =
+        "✅ Booking Confirmed with " + selectedWorker.name + " (⭐ " + selectedWorker.rating + ")";
+}
+</script>
+
+</body>
+</html>
